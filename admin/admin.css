@@ -1,0 +1,10 @@
+.msmtp-accordion h3 {
+    border-bottom: 1px solid #aaa;
+    padding: .3em;
+    background-color: #f7f7f7 !important;
+}
+
+.msmtp-accordion h3:hover {
+    cursor: pointer;
+}
+

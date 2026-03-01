@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="plugin" default="package">
+
+    <target name="package">
+
+        <basename property="dir" file="${project.basedir}"/>
+
+        <property name="slug" value="multismtp"/>
+
+        <loadfile property="plugin" file="plugin.php"/>
+
+        <propertyregex pattern="Version: ([^\s]+)" match="$1" property="version" subject="${plugin}"/>
+        <echo>Version: ${version}</echo>
+
+        <echo file="../plugin.json">{ "version": "${version}" }</echo>
+
+        <property name="zipfile" value="../${slug}.zip"/>
+        <property name="zipfileversion" value="../${slug}-${version}.zip"/>
+
+        <delete file="${zipfile}"/>
+        <delete file="${zipfileversion}"/>
+
+        <zip destfile="${zipfile}">
+            <fileset dir="..">
+                <include name="${dir}/**"/>
+                <exclude name="${dir}/.git/**" />
+                <exclude name="${dir}/.gitignore" />
+                <exclude name="${dir}/nbproject/**" />
+                <exclude name="${dir}/build.xml" />
+                <exclude name="${dir}/phpstan.*" />
+                <!--
+                <exclude name="${dir}/CHANGELOG.md" />
+                <exclude name="${dir}/README.md" />
+                -->
+            </fileset>
+        </zip>
+
+        <delete file="${zipfileversion}"/>
+        <copy file="${zipfile}" tofile="${zipfileversion}" />
+
+
+    </target>
+
+    <target name="publish" depends="package">
+        <echo>${zipfile}</echo>
+        <exec executable="scp" outputProperty="result">
+            <arg value="-i"/>
+            <arg value="C:/Users/satol/id_rsa-satollo"/>
+            <arg file="${zipfile}"/>
+            <arg file="${zipfileversion}"/>
+            <arg file="../plugin.json"/>
+            <arg file="CHANGELOG.md"/>
+            <arg file="README.md"/>
+            <arg value="root@www.satollo.net:/var/www/www.satollo.net/repo/${slug}"/>
+        </exec>
+
+    </target>
+</project>
