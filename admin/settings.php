@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }, 0);
 
             // Overrides the mailer configuration during tests
+            remove_filter('phpmailer_init', 'multismtp_phpmailer_init');
             add_filter('phpmailer_init', function ($mailer) {
                 global $multismtp_test_settings;
                 $which = $multismtp_test_settings['which'];
